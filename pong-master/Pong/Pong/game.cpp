@@ -18,6 +18,7 @@ void game::Init(const char* title)
 		if (renderer) 
 		{
 			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+			SDL_RenderPresent(renderer);
 			isRunning = true;
 		}
 		else
@@ -26,8 +27,8 @@ void game::Init(const char* title)
 		}
 
 	}
-	Player1 = new paddle(10, renderer);
-	Player2 = new paddle(780, renderer);
+//	Player1 = new paddle(10, renderer);
+	//Player2 = new paddle(780, renderer);
 }
 
 void game::HandleEvents()
@@ -70,8 +71,16 @@ void game::Render()
 	SDL_RenderClear(renderer);
 	Player1->RenderPaddle();
 	Player2->RenderPaddle();
+	RenderBall();
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderPresent(renderer);
+}
+
+void game::RenderBall() 
+{
+	Ball = { ballX, ballY, 10, 10 };
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	SDL_RenderFillRect(renderer, &Ball);
 }
 
 void game::Clean() 

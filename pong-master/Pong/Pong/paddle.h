@@ -8,7 +8,7 @@ public:
 	paddle(int x, SDL_Renderer* ren);
 
 	int posY;
-
+	int posX;
 
 	int width = 10;
 	int height = 70;
@@ -20,7 +20,7 @@ public:
 	//void CollisioPaddle();
 
 private:
-	int posX;
+	
 
 	SDL_Renderer* paddleRend;
 	SDL_Rect paddleRect;

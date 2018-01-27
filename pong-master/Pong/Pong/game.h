@@ -18,10 +18,16 @@ public:
 	bool Running() { return isRunning; }
 	void Clean();
 	virtual ~game();
-	
-private:
+
+	SDL_Rect Ball;
+	int ballX;
+	int ballY;
+	void RenderBall();
+
 	paddle* Player1;
 	paddle* Player2;
+private:
+	
 
 	bool isRunning = false;
 	SDL_Window* window;
