@@ -1,7 +1,9 @@
 #include "game.h"
-
+#include <SDL_net.h>
+#include <thread>
 
 game *Game = nullptr;
+
 
 int main(int argc, char* arg[])
 {
