@@ -1,1 +1,3 @@
-﻿  Pong.vcxproj -> C:\Users\henrileh\Documents\Repos\Mika-Henri-Net\NetGame\pong-master\Pong\Debug\Pong.exe
+﻿  main.cpp
+c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\pong\pong\main.cpp(59): warning C4101: 'message': unreferenced local variable
+  Pong.vcxproj -> C:\Users\henrileh\Documents\Repos\Mika-Henri-Net\NetGame\pong-master\Pong\Debug\Pong.exe

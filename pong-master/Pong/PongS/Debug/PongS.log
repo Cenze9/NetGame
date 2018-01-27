@@ -1,7 +1,2 @@
 ﻿  Source.cpp
-c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\pong\pongs\source.cpp(156): error C2084: function 'int main(int,char **)' already has a body
-  c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\pong\pongs\source.cpp(82): note: see previous definition of 'main'
-c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\pong\pongs\source.cpp(211): error C2360: initialization of 'packet' is skipped by 'case' label
-  c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\pong\pongs\source.cpp(206): note: see declaration of 'packet'
-c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\pong\pongs\source.cpp(218): error C2360: initialization of 'packet' is skipped by 'case' label
-  c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\pong\pongs\source.cpp(206): note: see declaration of 'packet'
+  PongS.vcxproj -> C:\Users\henrileh\Documents\Repos\Mika-Henri-Net\NetGame\pong-master\Pong\Debug\PongS.exe
