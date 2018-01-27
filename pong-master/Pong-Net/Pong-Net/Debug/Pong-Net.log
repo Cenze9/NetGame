@@ -1,10 +1,10 @@
 ﻿  main.c
-c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\main.c(92): warning C4305: 'initializing': truncation from 'double' to 'const float'
-c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\main.c(295): warning C4244: 'function': conversion from 'const int' to 'float', possible loss of data
-c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\main.c(296): warning C4244: 'function': conversion from 'int' to 'float', possible loss of data
-c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\main.c(301): warning C4244: 'function': conversion from 'int' to 'float', possible loss of data
-c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\main.c(302): warning C4244: 'function': conversion from 'int' to 'float', possible loss of data
-c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\main.c(434): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
-c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\main.c(553): warning C4244: 'function': conversion from 'const float' to 'int', possible loss of data
-c:\users\henrileh\documents\repos\mika-henri-net\netgame\pong-master\main.c(554): warning C4244: 'function': conversion from 'const float' to 'int', possible loss of data
-  Pong-Net.vcxproj -> C:\Users\henrileh\Documents\Repos\Mika-Henri-Net\NetGame\pong-master\Pong-Net\Debug\Pong-Net.exe
+c:\users\mikalin\documents\netgame\pong-master\main.c(92): warning C4305: 'initializing': truncation from 'double' to 'const float'
+c:\users\mikalin\documents\netgame\pong-master\main.c(295): warning C4244: 'function': conversion from 'const int' to 'float', possible loss of data
+c:\users\mikalin\documents\netgame\pong-master\main.c(296): warning C4244: 'function': conversion from 'int' to 'float', possible loss of data
+c:\users\mikalin\documents\netgame\pong-master\main.c(301): warning C4244: 'function': conversion from 'int' to 'float', possible loss of data
+c:\users\mikalin\documents\netgame\pong-master\main.c(302): warning C4244: 'function': conversion from 'int' to 'float', possible loss of data
+c:\users\mikalin\documents\netgame\pong-master\main.c(434): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
+c:\users\mikalin\documents\netgame\pong-master\main.c(553): warning C4244: 'function': conversion from 'const float' to 'int', possible loss of data
+c:\users\mikalin\documents\netgame\pong-master\main.c(554): warning C4244: 'function': conversion from 'const float' to 'int', possible loss of data
+  Pong-Net.vcxproj -> C:\Users\mikalin\Documents\NetGame\pong-master\Pong-Net\Debug\Pong-Net.exe
