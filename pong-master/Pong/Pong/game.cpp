@@ -27,8 +27,8 @@ void game::Init(const char* title)
 		}
 
 	}
-//	Player1 = new paddle(10, renderer);
-	//Player2 = new paddle(780, renderer);
+	Player1 = new paddle(10, renderer);
+	Player2 = new paddle(780, renderer);
 }
 
 void game::HandleEvents()
@@ -50,6 +50,7 @@ void game::HandleEvents()
 	{
 		Player1->posY += 5;
 	}
+	/*
 	if (KeyState[SDL_SCANCODE_W])
 	{
 		Player2->posY -= 5;
@@ -58,12 +59,12 @@ void game::HandleEvents()
 	{
 		Player2->posY += 5;
 	}
+	*/
 }
 
 void game::Update()
 {
 	Player1->MovePaddle();
-	Player2->MovePaddle();
 }
 
 void game::Render()

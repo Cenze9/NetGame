@@ -74,11 +74,11 @@ int EnetStart()
 		exit(EXIT_FAILURE);
 	}
 
-	enet_address_set_host(&address, "172.31.16.136");
-	address.port = 1234;
+	enet_address_set_host(&address, "127.0.0.1");
+	address.port = 2317;
 
 	// Connect and user service
-	peer = enet_host_connect(client, &address, 2, 0);
+	peer = enet_host_connect(client, &address, 0, 0);
 
 	if (peer == NULL) {
 		fprintf(stderr, "No available peers for initializing an ENet connection");
@@ -91,7 +91,7 @@ int EnetStart()
 
 void Enet() 
 {
-	eventStatus = enet_host_service(client, &event, 50000);
+	eventStatus = enet_host_service(client, &event, 5);
 	int dataP[6];
 	ENetPacket *packit;
 
@@ -106,10 +106,11 @@ void Enet()
 		}
 		case ENET_EVENT_TYPE_RECEIVE:
 			
+			std::cout << "receive" << std::endl;
 			int* data = (int*)event.packet->data;
 			packit = event.packet;
 			
-
+			
 			Game->Player2->posY = data[1];
 			Game->ballX = data[2];
 			Game->ballY = data[3];
@@ -125,7 +126,7 @@ void Enet()
 
 			// Lets broadcast this message to all
 			// enet_host_broadcast(client, 0, event.packet);
-			enet_packet_destroy(event.packet);
+			
 			break;
 			/*
 			case ENET_EVENT_TYPE_DISCONNECT:
@@ -138,9 +139,12 @@ void Enet()
 		}
 	}
 
-	int* datap = (int*)event.packet->data;
-	dataP[1] = Game->Player1->posY;
-
+	if (event.packet != nullptr)
+	{
+		int* datap = (int*)event.packet->data;
+		dataP[1] = Game->Player1->posY;
+		enet_packet_destroy(event.packet);
+	}
 	ENetPacket *packet = enet_packet_create((void*)dataP, sizeof(dataP), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
 	enet_peer_send(peer, 0, packet);
 

@@ -7,7 +7,7 @@ class paddle
 public:
 	paddle(int x, SDL_Renderer* ren);
 
-	int posY;
+	int posY=100;
 	int posX;
 
 	int width = 10;

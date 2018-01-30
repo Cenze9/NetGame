@@ -40,14 +40,14 @@ int main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
-	atexit(enet_deinitialize);
+
 
 	// b. Create a host using enet_host_create
 	address.host = ENET_HOST_ANY;
-	address.port = 1234;
+	address.port = 2317;
 
-	server = enet_host_create(&address, 32, 2, 0, 0);
-
+	server = enet_host_create(&address, 3, 0, 0, 0);
+	std::cout << "ready" << std::endl;
 	if (server == NULL) {
 		fprintf(stderr, "An error occured while trying to create an ENet server host\n");
 		exit(EXIT_FAILURE);
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 
 
 	while (1) {
-		eventStatus = enet_host_service(server, &event, 50000);
+		eventStatus = enet_host_service(server, &event, 5);
 		
 		if (objects.size() >= 2)
 		{
@@ -98,18 +98,21 @@ int main(int argc, char **argv)
 			case ENET_EVENT_TYPE_CONNECT:
 			{
 				printf("(Server) We got a new connection from %x\n",
-					event.peer->address.host);
+				event.peer->address.host);
+				int Id_Data[5]{ 0,50,-200,-200,0 };
+				Id_Data[4] = playernum;
+				ENetPacket* packit = enet_packet_create((void*)Id_Data, sizeof(Id_Data), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
+				enet_peer_send(event.peer, 2, packit);
 				object test(playernum, 0, 0);
 				test.info = event.peer;
 				objects.push_back(test);
 				playernum++;
 
-
 				break;
 			}
 			case ENET_EVENT_TYPE_RECEIVE:
 			{
-				
+				//std::cout << "receive" << std::endl;
 				//int *data = (int*)event.packet->data;
 				/*
 				int Py = data[0];
@@ -118,7 +121,7 @@ int main(int argc, char **argv)
 				*/
 				if (objects.size() >= 2)
 				{
-					for (int i = 0; i < objects.size(); i++)
+					for (int i = 1; i < objects.size(); i++)
 					{
 						if (objects[i].info == event.peer)
 						{
@@ -129,12 +132,42 @@ int main(int argc, char **argv)
 
 					}
 				}
-				int *data = (int*)event.packet->data;
 				
-				
+				int *p = (int*)event.packet->data;
+				int data[5];
+				data[0] = p[0];
 
-				
+				//memcpy
 
+				for (int i = 0; i < 5; i++)
+				{
+					data[i] = p[i];
+				}
+
+				data[4] = 1;
+
+
+				//data[1] = 50;
+				/*
+				if (objects.size()==2)
+				{
+					data[4] == 1;
+				}
+				else if (objects.size()>=3)
+				{
+					data[4] == 2;
+				}
+
+				*/
+
+				printf("%d\n", data[4]);
+				
+				
+				
+				ENetPacket* packit = enet_packet_create((void*)data, sizeof(data), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
+				enet_host_broadcast(server, 0, packit);
+				
+				/*
 				// Lets broadcast this message to all
 				if (playernum >= 2)
 				{
@@ -162,11 +195,13 @@ int main(int argc, char **argv)
 					}
 
 				}
+
 				else
 				{
 					ENetPacket* packit = enet_packet_create((void*)data, sizeof(data), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
 					enet_host_broadcast(server, 0, packit);
 				}
+				*/
 
 				break;
 			}
@@ -174,7 +209,7 @@ int main(int argc, char **argv)
 			case ENET_EVENT_TYPE_DISCONNECT:
 			{
 				//printf("%s disconnected.\n", event.peer->data);
-
+				std::cout << "someone left" << std::endl;
 				// Reset client's information
 				event.peer->data = NULL;
 
@@ -185,5 +220,7 @@ int main(int argc, char **argv)
 			}
 		}
 	}
+
+	atexit(enet_deinitialize);
 
 }

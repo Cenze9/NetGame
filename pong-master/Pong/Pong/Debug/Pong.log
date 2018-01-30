@@ -1,2 +1,6 @@
-﻿  game.cpp
-  Pong.vcxproj -> C:\Users\mikalin\Documents\Henri-LehtiLintu-Mika\pong-master\Pong\Debug\Pong.exe
+﻿  paddle.cpp
+  main.cpp
+  game.cpp
+  Generating Code...
+     Creating library C:\Users\henrileh\Documents\Repos\Net-Work\NetGame\pong-master\Pong\Debug\Pong.lib and object C:\Users\henrileh\Documents\Repos\Net-Work\NetGame\pong-master\Pong\Debug\Pong.exp
+  Pong.vcxproj -> C:\Users\henrileh\Documents\Repos\Net-Work\NetGame\pong-master\Pong\Debug\Pong.exe
