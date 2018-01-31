@@ -21,17 +21,24 @@ struct object{
 	object(int i, int x, int y) :Id(i), Px(x), Py(y){}
 };
 
+int PaddleW = 10;
+int PaddleH = 70;
+float bVelX = 0;
+float bVelY = 0;
+
+int CheckCollision(object paddle, object ball);
 
 int main(int argc, char **argv)
 {
 	ENetAddress address;
 	ENetHost *server;
 	ENetEvent event;
+	ENetPacket* packit;
 	int playernum=0;
 	int eventStatus;
 	std::vector<object> objects;
-	int PaddleW = 10;
-	int PaddleH = 70;
+	int data[5];
+	
 
 
 	// a. Initialize enet
@@ -47,7 +54,7 @@ int main(int argc, char **argv)
 	address.port = 2317;
 
 	server = enet_host_create(&address, 3, 0, 0, 0);
-	std::cout << "ready" << std::endl;
+	printf("Ready", playernum,"\n");
 	if (server == NULL) {
 		fprintf(stderr, "An error occured while trying to create an ENet server host\n");
 		exit(EXIT_FAILURE);
@@ -55,7 +62,6 @@ int main(int argc, char **argv)
 	object Ball(playernum, 0, 0);
 	Ball.info = 0;
 	objects.push_back(Ball);
-	playernum++;
 	// c. Connect and user service
 	eventStatus = 1;
 
@@ -77,18 +83,13 @@ int main(int argc, char **argv)
 		{
 			play2.x = objects[2].Px;
 			play2.y = objects[2].Py;
+
+			// CheckCollision(objects[1], objects[0]);
+			// CheckCollision(objects[2], objects[0]);
+
+			// objects[0].Px += bVelX*(32.0f* 0.001f) * 5;
+			// objects[0].Py += bVelY*(32.0f* 0.001f) * 5;
 		}
-
-		//__________collision hell__________
-
-
-
-
-
-
-
-
-
 
 
 		// If we had some event that interested us
@@ -99,13 +100,11 @@ int main(int argc, char **argv)
 			{
 				printf("(Server) We got a new connection from %x\n",
 				event.peer->address.host);
-				int Id_Data[5]{ 0,50,-200,-200,0 };
-				Id_Data[4] = playernum;
-				ENetPacket* packit = enet_packet_create((void*)Id_Data, sizeof(Id_Data), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
-				enet_peer_send(event.peer, 2, packit);
+				int Id_Data[5]{ 0,50,0,0,0 };
 				object test(playernum, 0, 0);
 				test.info = event.peer;
 				objects.push_back(test);
+
 				playernum++;
 
 				break;
@@ -119,23 +118,26 @@ int main(int argc, char **argv)
 				int Bx = data[1];
 				int By = data[2];
 				*/
-				if (objects.size() >= 2)
+				if (objects.size() > 2)
 				{
-					for (int i = 1; i < objects.size(); i++)
+					for (int i = 0; i < objects.size(); i++)
 					{
 						if (objects[i].info == event.peer)
 						{
 							int *data = (int*)event.packet->data;
 							objects[i].Px == data[0];
 							objects[i].Py == data[1];
+							
 						}
 
 					}
+
 				}
 				
+				
+
 				int *p = (int*)event.packet->data;
-				int data[5];
-				data[0] = p[0];
+				
 
 				//memcpy
 
@@ -144,7 +146,6 @@ int main(int argc, char **argv)
 					data[i] = p[i];
 				}
 
-				data[4] = 1;
 
 
 				//data[1] = 50;
@@ -153,18 +154,24 @@ int main(int argc, char **argv)
 				{
 					data[4] == 1;
 				}
-				else if (objects.size()>=3)
+				else if (objects.size()==3)
 				{
 					data[4] == 2;
 				}
 
 				*/
 
-				printf("%d\n", data[4]);
+				
+				//printf("%d\n", data[4]);
 				
 				
+
+				data[4] = playernum;
+
+				printf("%d", playernum, "\n");
 				
-				ENetPacket* packit = enet_packet_create((void*)data, sizeof(data), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
+				
+				packit = enet_packet_create((void*)data, sizeof(data), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
 				enet_host_broadcast(server, 0, packit);
 				
 				/*
@@ -209,18 +216,64 @@ int main(int argc, char **argv)
 			case ENET_EVENT_TYPE_DISCONNECT:
 			{
 				//printf("%s disconnected.\n", event.peer->data);
-				std::cout << "someone left" << std::endl;
+				printf("someone left\n");
 				// Reset client's information
 				event.peer->data = NULL;
-
+				printf("%d", playernum, "\n");
 				playernum--;
-
+				printf("%d", playernum, "\n");
 				break;
 			}
+
+			data[4] = playernum;
+
+			printf("%d", playernum, "\n");
+
+
+			packit = enet_packet_create((void*)data, sizeof(data), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
+			enet_host_broadcast(server, 0, packit);
+
 			}
 		}
 	}
 
 	atexit(enet_deinitialize);
+
+}
+
+
+int CheckCollision(object paddle, object ball)
+{
+	if (ball.Px<15 || ball.Px>(775 + PaddleW))
+	{
+		return 3;
+	}
+
+
+
+	int by0 = ball.Py;
+	int by1 = ball.Py + 10;
+	int ry0 = paddle.Py;
+	int ry1 = paddle.Py + PaddleH;
+
+	bool happened = ((ry0 < by0 && by0 < ry1) || (ry0 < by1 && by1 < ry1));
+
+	if (!happened) {
+		return 0;
+	}
+
+	
+
+	int mby = by0 + 5;
+	int mry = ry0 + 5;
+	float mid_distance = mry - mby;
+	float RACKET_HITBACK_MAXANGLE = 85.0f*M_PI / 180.0f;
+	float angle = RACKET_HITBACK_MAXANGLE * (mid_distance / (PaddleH/2.0f+5.0f));
+
+	bVelY = -sinf(angle); // Y increases as you go down, not up.
+	bVelX = bVelX < 0 ? cosf(angle) : -cosf(angle);
+
+	return 1;
+
 
 }

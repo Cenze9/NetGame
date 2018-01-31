@@ -27,7 +27,7 @@ void game::Init(const char* title)
 		}
 
 	}
-	Player1 = new paddle(10, renderer);
+	Player1 = new paddle(700, renderer);
 	Player2 = new paddle(780, renderer);
 }
 

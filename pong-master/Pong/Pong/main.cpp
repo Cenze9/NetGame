@@ -11,13 +11,16 @@
 
 int EnetStart();
 void Enet();
+void X_PosCheck();
 
 ENetAddress address;
-	ENetHost *client;
-	ENetPeer *peer;
-	char message[1024];
-	ENetEvent event;
-	int eventStatus;
+ENetHost *client;
+ENetPeer *peer;
+char message[1024];
+ENetEvent event;
+int eventStatus;
+bool unIdentified = true;
+int clientID = 0;
 
 game *Game = nullptr;
 
@@ -44,8 +47,10 @@ int main(int argc, char* arg[])
 
 		Game->HandleEvents();
 		Enet();
+		X_PosCheck();
 		Game->Update();
 		Game->Render();
+		printf("%d", clientID);
 
 		frameTime = SDL_GetTicks() - frameStart;
 		if (frameDelay > frameTime) 
@@ -53,6 +58,7 @@ int main(int argc, char* arg[])
 			SDL_Delay(frameDelay - frameTime);
 		}
 	}
+	
 	atexit(enet_deinitialize);
 	Game->Clean();
 
@@ -86,14 +92,18 @@ int EnetStart()
 	}
 
 	eventStatus = 1;
+
+	X_PosCheck();
+
 	return 0;
 }
 
 void Enet() 
 {
+	SDL_Delay(32);
 	eventStatus = enet_host_service(client, &event, 5);
 	int dataP[6];
-	ENetPacket *packit;
+
 
 	// If we had some event that interested us
 	if (eventStatus > 0) {
@@ -106,15 +116,37 @@ void Enet()
 		}
 		case ENET_EVENT_TYPE_RECEIVE:
 			
+			
+
 			std::cout << "receive" << std::endl;
 			int* data = (int*)event.packet->data;
-			packit = event.packet;
 			
+			
+			if (clientID==1)
+			{
+				Game->Player2->posY = data[1];
+			}
+			else if (clientID == 2)
+			{
+				Game->Player2->posY = data[0];
+			}
+
 			
 			Game->Player2->posY = data[1];
+			
+
 			Game->ballX = data[2];
 			Game->ballY = data[3];
 
+			if (unIdentified)
+			{
+				
+					clientID = data[4];
+					unIdentified = false;
+				
+			}
+
+			/*
 			if (data[4] == 1) 
 			{
 				Game->Player1->posX = 15;
@@ -122,12 +154,15 @@ void Enet()
 			else
 			{
 				Game->Player1->posX = 700 - 25;
-			}
+			}*/
+
+		
+
 
 			// Lets broadcast this message to all
 			// enet_host_broadcast(client, 0, event.packet);
 			
-			break;
+			
 			/*
 			case ENET_EVENT_TYPE_DISCONNECT:
 			printf("(Client) %s disconnected.\n", event.peer->data);
@@ -136,19 +171,47 @@ void Enet()
 			event.peer->data = NULL;
 			break;
 			*/
+			break;
 		}
 	}
 
-	if (event.packet != nullptr)
+	
+	//dataP[1] = Game->Player1->posY;
+	if (clientID == 1)
 	{
-		int* datap = (int*)event.packet->data;
-		dataP[1] = Game->Player1->posY;
-		enet_packet_destroy(event.packet);
+	dataP[0] = Game->Player1->posY;
 	}
+	else if (clientID == 2)
+	{
+	dataP[1] = Game->Player1->posY;
+	}
+		
+	
 	ENetPacket *packet = enet_packet_create((void*)dataP, sizeof(dataP), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
 	enet_peer_send(peer, 0, packet);
-
 }
+
+void X_PosCheck()
+{
+	if (clientID == 1)
+	{
+		Game->Player1->posX = 15;
+		Game->Player2->posX = 775;
+	}
+	else if (clientID == 2)
+	{
+		Game->Player2->posX = 15;
+		Game->Player1->posX = 775;
+	}
+}
+
+
+
+
+
+
+
+
 
 //client____________________________
 /*
