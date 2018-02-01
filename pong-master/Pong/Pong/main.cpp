@@ -21,6 +21,9 @@ ENetEvent event;
 int eventStatus;
 bool unIdentified = true;
 int clientID = 0;
+int tempY = 0;
+
+int roundCounter = 0;
 
 game *Game = nullptr;
 
@@ -46,17 +49,22 @@ int main(int argc, char* arg[])
 		frameStart = SDL_GetTicks();
 
 		Game->HandleEvents();
-		Enet();
+		if (roundCounter == 10)
+		{
+			Enet();
+			roundCounter = 0;
+		}
 		X_PosCheck();
 		Game->Update();
 		Game->Render();
-		printf("%d", clientID);
+		//printf("%d", clientID);
 
 		frameTime = SDL_GetTicks() - frameStart;
 		if (frameDelay > frameTime) 
 		{
 			SDL_Delay(frameDelay - frameTime);
 		}
+		roundCounter++;
 	}
 	
 	atexit(enet_deinitialize);
@@ -80,7 +88,7 @@ int EnetStart()
 		exit(EXIT_FAILURE);
 	}
 
-	enet_address_set_host(&address, "127.0.0.1");
+	enet_address_set_host(&address, "192.168.1.4");
 	address.port = 2317;
 
 	// Connect and user service
@@ -100,8 +108,8 @@ int EnetStart()
 
 void Enet() 
 {
-	SDL_Delay(32);
-	eventStatus = enet_host_service(client, &event, 5);
+	SDL_Delay(1000/60);
+	eventStatus = enet_host_service(client, &event, 1000/60);
 	int dataP[6];
 
 
@@ -117,32 +125,42 @@ void Enet()
 		case ENET_EVENT_TYPE_RECEIVE:
 			
 			
-
-			std::cout << "receive" << std::endl;
-			int* data = (int*)event.packet->data;
 			
-			
-			if (clientID==1)
+			//std::cout << "receive" << std::endl;
+			int* p = (int*)event.packet->data;
+			for (int i = 0; i < 6; i++)
 			{
-				Game->Player2->posY = data[1];
-			}
-			else if (clientID == 2)
-			{
-				Game->Player2->posY = data[0];
+				dataP[i] = p[i];
 			}
 
-			
-			Game->Player2->posY = data[1];
-			
+			for (int i = 0; i < 6; i++)
+			{
+				std::cout << dataP[i] << std::endl;
 
-			Game->ballX = data[2];
-			Game->ballY = data[3];
+			}
+			//std::cout << dataP[0] << std::endl;
+			//std::cout << p[0] << std::endl;
+			//if (clientID==1)
+			//{
+			//	Game->Player2->posY = dataP[1];
+			//}
+			//else if (clientID == 2)
+			//{
+			//	Game->Player2->posY = dataP[0];
+			//}
+
+			
+			//Game->Player2->posY = dataP[1];
+			//std::cout << dataP[1] << std::endl;
+
+			Game->ballX = dataP[3];
+			Game->ballY = dataP[4];
 
 			if (unIdentified)
 			{
 				
-					clientID = data[4];
-					unIdentified = false;
+				clientID = dataP[5];
+				unIdentified = false;
 				
 			}
 
@@ -155,14 +173,8 @@ void Enet()
 			{
 				Game->Player1->posX = 700 - 25;
 			}*/
-
-		
-
-
 			// Lets broadcast this message to all
 			// enet_host_broadcast(client, 0, event.packet);
-			
-			
 			/*
 			case ENET_EVENT_TYPE_DISCONNECT:
 			printf("(Client) %s disconnected.\n", event.peer->data);
@@ -179,16 +191,26 @@ void Enet()
 	//dataP[1] = Game->Player1->posY;
 	if (clientID == 1)
 	{
-	dataP[0] = Game->Player1->posY;
+		
+		Game->Player2->posY = dataP[2];
 	}
 	else if (clientID == 2)
 	{
-	dataP[1] = Game->Player1->posY;
+		dataP[2] = Game->Player1->posY;
+		Game->Player2->posY = dataP[1];
 	}
-		
-	
-	ENetPacket *packet = enet_packet_create((void*)dataP, sizeof(dataP), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
-	enet_peer_send(peer, 0, packet);
+	//	
+	//if (Game->Player1->posY != tempY) 
+	//{
+		//tempY = Game->Player1->posY;
+	dataP[1] = Game->Player1->posY;
+		ENetPacket *packet = enet_packet_create((void*)dataP, (sizeof(dataP)+1), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
+		enet_peer_send(peer, 0, packet);
+		enet_peer_send(peer, 0, packet);
+		enet_peer_send(peer, 0, packet);
+		enet_peer_send(peer, 0, packet);
+		std::cout << "I sent data" << std::endl;
+	//}
 }
 
 void X_PosCheck()
@@ -198,7 +220,7 @@ void X_PosCheck()
 		Game->Player1->posX = 15;
 		Game->Player2->posX = 775;
 	}
-	else if (clientID == 2)
+	if (clientID == 2)
 	{
 		Game->Player2->posX = 15;
 		Game->Player1->posX = 775;

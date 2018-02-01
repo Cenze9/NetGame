@@ -14,8 +14,8 @@
 
 struct object{
 	int Id; 
-	int Px; 
-	int Py;
+	int Px=0; 
+	int Py=0;
 	ENetPeer* info;
 
 	object(int i, int x, int y) :Id(i), Px(x), Py(y){}
@@ -25,6 +25,8 @@ int PaddleW = 10;
 int PaddleH = 70;
 float bVelX = 0;
 float bVelY = 0;
+static int p1y = 0;
+int p2y = 0;
 
 int CheckCollision(object paddle, object ball);
 
@@ -37,7 +39,7 @@ int main(int argc, char **argv)
 	int playernum=0;
 	int eventStatus;
 	std::vector<object> objects;
-	int data[5];
+	int data[6];
 	
 
 
@@ -72,7 +74,7 @@ int main(int argc, char **argv)
 
 
 	while (1) {
-		eventStatus = enet_host_service(server, &event, 5);
+		eventStatus = enet_host_service(server, &event, (1000/60));
 		
 		if (objects.size() >= 2)
 		{
@@ -104,9 +106,7 @@ int main(int argc, char **argv)
 				object test(playernum, 0, 0);
 				test.info = event.peer;
 				objects.push_back(test);
-
 				playernum++;
-
 				break;
 			}
 			case ENET_EVENT_TYPE_RECEIVE:
@@ -118,6 +118,9 @@ int main(int argc, char **argv)
 				int Bx = data[1];
 				int By = data[2];
 				*/
+
+
+				/*
 				if (objects.size() > 2)
 				{
 					for (int i = 0; i < objects.size(); i++)
@@ -133,18 +136,24 @@ int main(int argc, char **argv)
 					}
 
 				}
-				
+				*/
 				
 
 				int *p = (int*)event.packet->data;
 				
+				
+				printf("got data%d\n",p[1]);
 
 				//memcpy
-
-				for (int i = 0; i < 5; i++)
+				
+				for (int i = 0; i < 6; i++)
 				{
-					data[i] = p[i];
+					data[i] = (int)p[i];
 				}
+
+
+				p1y = data[1];
+				p2y = p[2];
 
 
 
@@ -165,14 +174,10 @@ int main(int argc, char **argv)
 				//printf("%d\n", data[4]);
 				
 				
-
-				data[4] = playernum;
-
-				printf("%d", playernum, "\n");
 				
+
 				
-				packit = enet_packet_create((void*)data, sizeof(data), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
-				enet_host_broadcast(server, 0, packit);
+
 				
 				/*
 				// Lets broadcast this message to all
@@ -201,7 +206,7 @@ int main(int argc, char **argv)
 						}
 					}
 
-				}
+				}     
 
 				else
 				{
@@ -222,19 +227,41 @@ int main(int argc, char **argv)
 				printf("%d", playernum, "\n");
 				playernum--;
 				printf("%d", playernum, "\n");
+
+				for (int i=0; i < objects.size(); i++)
+				{
+					if (objects[i].info == event.peer)
+					{
+						//TODOO remove from vector
+					}
+				}
+
 				break;
 			}
 
-			data[4] = playernum;
-
-			printf("%d", playernum, "\n");
-
-
-			packit = enet_packet_create((void*)data, sizeof(data), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
-			enet_host_broadcast(server, 0, packit);
-
 			}
 		}
+		data[0] = 0;
+		data[1] = p1y;
+		data[2] = objects[0].Px;
+		data[3] = objects[0].Px;
+		data[4] = objects[0].Py;
+		data[5] = playernum;
+
+		objects[0].Px++;
+		objects[0].Py++;
+
+		if (objects[0].Px == 600)
+		{
+			objects[0].Px=0;
+			objects[0].Py=0;
+		}
+		
+		packit = enet_packet_create((void*)data, (sizeof(data)+1), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
+		enet_host_broadcast(server, 0, packit);
+		
+		
+		
 	}
 
 	atexit(enet_deinitialize);

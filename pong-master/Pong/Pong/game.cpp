@@ -1,5 +1,5 @@
 #include "game.h"
-
+#include <iostream>
 
 
 
@@ -50,16 +50,18 @@ void game::HandleEvents()
 	{
 		Player1->posY += 5;
 	}
-	/*
+	
 	if (KeyState[SDL_SCANCODE_W])
 	{
-		Player2->posY -= 5;
+		//Player2->posY -= 5;
+		std::cout << Player1->posY<<std::endl;
 	}
 	if (KeyState[SDL_SCANCODE_S])
 	{
-		Player2->posY += 5;
+		//Player2->posY += 5;
+		std::cout << Player2->posY << std::endl;
 	}
-	*/
+
 }
 
 void game::Update()
