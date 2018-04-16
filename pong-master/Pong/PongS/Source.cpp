@@ -102,7 +102,6 @@ int main(int argc, char **argv)
 			{
 				printf("(Server) We got a new connection from %x\n",
 				event.peer->address.host);
-				int Id_Data[5]{ 0,50,0,0,0 };
 				object test(playernum, 0, 0);
 				test.info = event.peer;
 				objects.push_back(test);
@@ -111,109 +110,31 @@ int main(int argc, char **argv)
 			}
 			case ENET_EVENT_TYPE_RECEIVE:
 			{
-				//std::cout << "receive" << std::endl;
-				//int *data = (int*)event.packet->data;
-				/*
-				int Py = data[0];
-				int Bx = data[1];
-				int By = data[2];
-				*/
 
-
-				/*
-				if (objects.size() > 2)
-				{
-					for (int i = 0; i < objects.size(); i++)
-					{
-						if (objects[i].info == event.peer)
-						{
-							int *data = (int*)event.packet->data;
-							objects[i].Px == data[0];
-							objects[i].Py == data[1];
-							
-						}
-
-					}
-
-				}
-				*/
-				
 
 				int *p = (int*)event.packet->data;
 				
 				
-				printf("got data%d\n",p[1]);
+				printf("got data: %d\n",p[1]);
 
 				//memcpy
 				
+                /*
 				for (int i = 0; i < 6; i++)
 				{
 					data[i] = (int)p[i];
 				}
+                */
 
+                if ((int)p == 1) 
+                {
+                    p1y = p[1];
+                }
 
-				p1y = data[1];
-				p2y = p[2];
-
-
-
-				//data[1] = 50;
-				/*
-				if (objects.size()==2)
-				{
-					data[4] == 1;
-				}
-				else if (objects.size()==3)
-				{
-					data[4] == 2;
-				}
-
-				*/
-
-				
-				//printf("%d\n", data[4]);
-				
-				
-				
-
-				
-
-				
-				/*
-				// Lets broadcast this message to all
-				if (playernum >= 2)
-				{
-					if (objects.size() >= 3)
-					{
-						for (int i = 0; i < objects.size(); i++)
-						{
-							if (objects[i].info != event.peer || objects[i].info != 0)
-							{
-								if (objects[i].Id == 1)
-								{
-									data[4] == 1;
-									ENetPacket* packit = enet_packet_create(data, sizeof(data), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
-									enet_peer_send(objects[i].info, sizeof((void*)data), packit);
-								}
-								else if (objects[i].Id == 2)
-								{
-									data[4] == 2;
-									ENetPacket* packit = enet_packet_create(data, sizeof(data), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
-									enet_peer_send(objects[i].info, sizeof((void*)data), packit);
-								}
-							}
-
-						}
-					}
-
-				}     
-
-				else
-				{
-					ENetPacket* packit = enet_packet_create((void*)data, sizeof(data), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
-					enet_host_broadcast(server, 0, packit);
-				}
-				*/
+                else if ((int)p == 2) 
+                {
+                    p2y = p[2];
+                }
 
 				break;
 			}
@@ -241,9 +162,12 @@ int main(int argc, char **argv)
 
 			}
 		}
+
+
+
 		data[0] = 0;
 		data[1] = p1y;
-		data[2] = objects[0].Px;
+		data[2] = p2y;
 		data[3] = objects[0].Px;
 		data[4] = objects[0].Py;
 		data[5] = playernum;
@@ -265,7 +189,7 @@ int main(int argc, char **argv)
 	}
 
 	atexit(enet_deinitialize);
-
+    return 0;
 }
 
 
