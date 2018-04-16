@@ -64,9 +64,10 @@ void game::HandleEvents()
 
 }
 
-void game::Update()
+void game::Update(int playerID, int newYPos)
 {
 	Player1->MovePaddle();
+    Player2->posY = newYPos;
 }
 
 void game::Render()

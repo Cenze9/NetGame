@@ -13,7 +13,7 @@ public:
 	game();
 	void Init(const char* title);
 	void HandleEvents();
-	void Update();
+	void Update(int playerID, int newYPos);
 	void Render();
 	bool Running() { return isRunning; }
 	void Clean();

@@ -55,7 +55,7 @@ int main(int argc, char* arg[])
 			roundCounter = 0;
 		}
 		X_PosCheck();
-		Game->Update();
+		Game->Update(clientID, tempY);
 		Game->Render();
 		//printf("%d", clientID);
 
@@ -88,7 +88,7 @@ int EnetStart()
 		exit(EXIT_FAILURE);
 	}
 
-	enet_address_set_host(&address, "192.168.1.4");
+	enet_address_set_host(&address, "192.168.1.3");
 	address.port = 2317;
 
 	// Connect and user service
@@ -153,6 +153,8 @@ void Enet()
 			//Game->Player2->posY = dataP[1];
 			//std::cout << dataP[1] << std::endl;
 
+            
+
 			Game->ballX = dataP[3];
 			Game->ballY = dataP[4];
 
@@ -163,6 +165,8 @@ void Enet()
 				unIdentified = false;
 				
 			}
+
+            if (clientID == 1) { tempY = dataP[2]; }
 
 			/*
 			if (data[4] == 1) 
