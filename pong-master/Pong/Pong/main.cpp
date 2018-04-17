@@ -23,6 +23,8 @@ bool unIdentified = true;
 int clientID = 0;
 int tempY = 0;
 
+//ENetPacket *packet;
+
 int roundCounter = 0;
 
 game *Game = nullptr;
@@ -88,7 +90,7 @@ int EnetStart()
 		exit(EXIT_FAILURE);
 	}
 
-	enet_address_set_host(&address, "192.168.1.3");
+	enet_address_set_host(&address, "127.0.0.1");
 	address.port = 2317;
 
 	// Connect and user service
@@ -130,7 +132,7 @@ void Enet()
 			int* p = (int*)event.packet->data;
 			for (int i = 0; i < 6; i++)
 			{
-				dataP[i] = p[i];
+				dataP[i] = (int)p[i];
 			}
 
 			for (int i = 0; i < 6; i++)
@@ -166,7 +168,7 @@ void Enet()
 				
 			}
 
-            if (clientID == 1) { tempY = dataP[2]; }
+            tempY = dataP[2];
 
 			/*
 			if (data[4] == 1) 
@@ -190,30 +192,42 @@ void Enet()
 			break;
 		}
 	}
-
+    
 	
 	//dataP[1] = Game->Player1->posY;
 	if (clientID == 1)
 	{
-		
-		Game->Player2->posY = dataP[2];
+        dataP[1] = Game->Player1->posY;
+		tempY = dataP[2];
 	}
 	else if (clientID == 2)
 	{
 		dataP[2] = Game->Player1->posY;
-		Game->Player2->posY = dataP[1];
+		tempY = dataP[1];
 	}
+
+    for (int i = 0; i < 6; i++)
+    {
+        std::cout << "Data is this    " << dataP[i] << std::endl;
+
+    }
 	//	
 	//if (Game->Player1->posY != tempY) 
 	//{
 		//tempY = Game->Player1->posY;
-	dataP[1] = Game->Player1->posY;
-		ENetPacket *packet = enet_packet_create((void*)dataP, (sizeof(dataP)+1), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(peer, 0, packet);
-		enet_peer_send(peer, 0, packet);
-		enet_peer_send(peer, 0, packet);
+	//dataP[1] = Game->Player1->posY;
+
+        ENetPacket *packet = enet_packet_create((void*)dataP, (sizeof(dataP)+1), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
 		enet_peer_send(peer, 0, packet);
 		std::cout << "I sent data" << std::endl;
+
+        int temparry[6];
+        for (int i = 0; i < 6; i++)
+        {
+            temparry[i] = (int)packet[i].data;
+            std::cout << "I sent this   " << temparry[i] << std::endl;
+        }
+        
 	//}
 }
 

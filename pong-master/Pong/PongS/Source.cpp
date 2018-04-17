@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 	address.port = 2317;
 
 	server = enet_host_create(&address, 3, 0, 0, 0);
-	printf("Ready", playernum,"\n");
+	
 	if (server == NULL) {
 		fprintf(stderr, "An error occured while trying to create an ENet server host\n");
 		exit(EXIT_FAILURE);
@@ -72,9 +72,11 @@ int main(int argc, char **argv)
 	SDL_Rect play2 = { -100,-100, PaddleW,PaddleH };
 	
 
-
+    printf("Ready %d", playernum, "\n");
 	while (1) {
-		eventStatus = enet_host_service(server, &event, (1000/60));
+
+
+		
 		
 		if (objects.size() >= 2)
 		{
@@ -93,6 +95,7 @@ int main(int argc, char **argv)
 			// objects[0].Py += bVelY*(32.0f* 0.001f) * 5;
 		}
 
+        eventStatus = enet_host_service(server, &event, (5));
 
 		// If we had some event that interested us
 		if (eventStatus > 0) {
@@ -126,15 +129,11 @@ int main(int argc, char **argv)
 				}
                 */
 
-                if ((int)p == 1) 
-                {
-                    p1y = p[1];
-                }
-
-                else if ((int)p == 2) 
-                {
-                    p2y = p[2];
-                }
+                
+                    p1y = (int)p[1];
+                
+                    p2y = (int)p[2];
+                
 
 				break;
 			}
@@ -166,8 +165,9 @@ int main(int argc, char **argv)
 
 
 		data[0] = 0;
-		data[1] = p1y;
-		data[2] = p2y;
+		data[1] = objects[0].Px;
+		data[2] = objects[0].Px;
+
 		data[3] = objects[0].Px;
 		data[4] = objects[0].Py;
 		data[5] = playernum;
@@ -184,7 +184,15 @@ int main(int argc, char **argv)
 		packit = enet_packet_create((void*)data, (sizeof(data)+1), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
 		enet_host_broadcast(server, 0, packit);
 		
-		
+        int temparry[6];
+
+        for (int i = 0; i < 6; i++)
+        {
+            temparry[i] = (int)packit[i].data;
+            std::cout << "I sent this   " << temparry[i] << std::endl;
+        }
+
+        std::cout << "LOOP" << std::endl;
 		
 	}
 
