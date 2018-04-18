@@ -225,11 +225,11 @@ void Enet()
 		std::cout << "I sent data" << std::endl;
 
         int temparry[6];
-        for (int i = 0; i < 6; i++)
+       /* for (int i = 0; i < 6; i++)
         {
             temparry[i] = (int)packet[i].data;
             std::cout << "I sent this   " << temparry[i] << std::endl;
-        }
+        }*/
         
 	//}
 }

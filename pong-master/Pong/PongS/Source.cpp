@@ -23,7 +23,7 @@ struct object{
 
 int PaddleW = 10;
 int PaddleH = 70;
-float bVelX = 1;
+float bVelX = -1;
 float bVelY = 0;
 static int p1y = 0;
 int p2y = 0;
@@ -68,41 +68,11 @@ int main(int argc, char **argv)
 	eventStatus = 1;
 
 	SDL_Rect pallo = {objects[0].Px,objects[0].Py,10,10};
-	SDL_Rect play1 = { -100,-100, PaddleW,PaddleH };
-	SDL_Rect play2 = { -100,-100, PaddleW,PaddleH };
+
 	
 
     printf("Ready %d", playernum, "\n");
 	while (1) {
-
-        objects[0].Px += bVelX;
-        objects[0].Py += bVelY;
-		
-		if (objects.size() >= 2)
-		{
-			play1.x = objects[1].Px;
-			play1.y = objects[1].Py;
-		}
-		if (objects.size() >= 3)
-		{
-			play2.x = objects[2].Px;
-			play2.y = objects[2].Py;
-
-            if (objects[0].Px<15)
-            {
-                data[0] = 3;
-            }
-            else if (objects[0].Px >(775 + PaddleW))
-            {
-                data[0] = 4;
-            }
-
-			CheckCollision(objects[1], objects[0]);
-			CheckCollision(objects[2], objects[0]);
-
-			// objects[0].Px += bVelX*(32.0f* 0.001f) * 5;
-			// objects[0].Py += bVelY*(32.0f* 0.001f) * 5;
-		}
 
         eventStatus = enet_host_service(server, &event, 1000);
 
@@ -172,6 +142,45 @@ int main(int argc, char **argv)
 		}
 
 
+        objects[0].Px += bVelX;
+        objects[0].Py += bVelY;
+
+        if (objects.size() >= 2)
+        {
+            if (abs(data[1]) < 700)
+            {
+                objects[1].Py = data[1];
+            }
+        }
+        if (objects.size() >= 3)
+        {
+            if (abs(data[1]) < 700) 
+            {
+                objects[2].Py = data[2];
+            }
+            printf("Two players \n");
+
+            printf("%d,%d\n",objects[1].Py, objects[2].Py);
+
+            CheckCollision(objects[1], objects[0]);
+            CheckCollision(objects[2], objects[0]);
+
+            // objects[0].Px += bVelX*(32.0f* 0.001f) * 5;
+            // objects[0].Py += bVelY*(32.0f* 0.001f) * 5;
+        }
+        if (objects[0].Px<15)
+        {
+            data[0] = 3;
+            objects[0].Px = 400;
+            objects[0].Py = 350;
+        }
+        else if (objects[0].Px >(775 + PaddleW))
+        {
+            data[0] = 4;
+            objects[0].Px = 400;
+            objects[0].Py = 350;
+        }
+
 
 		data[0] = 0;
 		//data[1] = objects[0].Px;
@@ -198,23 +207,84 @@ int CheckCollision(object paddle, object ball)
 {
 	int by0 = ball.Py;
 	int by1 = ball.Py + 10;
-	int ry0 = paddle.Py;
-	int ry1 = paddle.Py + PaddleH;
+    int bx0 = ball.Px;
+    int bx1 = ball.Px + 10;
 
-	bool happened = ((ry0 < by0 && by0 < ry1) || (ry0 < by1 && by1 < ry1));
+    int ppx = ball.Px + 5;
+    int ppy = ball.Py + 5;
+
+	int ry0 = paddle.Py;
+	int ry1 = paddle.Py + 70;
+    int rx0 = paddle.Px;
+    int rx1 = paddle.Px + 10;
+
+    bool happened = false;
+
+    if(rx1 < 200) // Left Paddle (Player 1)
+    { 
+        if (rx1 >= bx0) 
+        {
+            printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            if (ry0 <= by1 && ry1 >= by0) 
+            {
+                happened = true;
+            }
+        }
+    }
+    else if (rx0 > 600) // Right Paddle (Payer 2)
+    {
+       
+        if (rx0 >= bx1)
+        {
+            
+            if (ry0 <= by1 && ry1 >= by0)
+            {
+                happened = true;
+                
+           
+            }
+        }
+    }
+
+/*
+    if(ppx > rx0 && ppx < rx1)
+    {
+        if (ppy > ry0 && ppy < ry1) 
+        {
+            printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        }
+    }
+*/
+
+
+
+   /* if (pp > 600) {
+        happened = (rx0 > pp);
+        printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    }
+    else if (pp < 200) 
+    {
+        happened = (rx0 > pp);
+    }
+*/
+	//bool happened = ((ry0 < by0 && by0 < ry1) || (ry0 < by1 && by1 < ry1) ));
+
+    
 
 	if (!happened) {
 		return 0;
+        
 	}
 
 	int mby = by0 + 5;
 	int mry = ry0 + 5;
 	float mid_distance = mry - mby;
 	float RACKET_HITBACK_MAXANGLE = 85.0f*M_PI / 180.0f;
-	float angle = RACKET_HITBACK_MAXANGLE * (mid_distance / (PaddleH/2.0f+5.0f));
+	float angle = RACKET_HITBACK_MAXANGLE * (mid_distance / (70/2.0f+5.0f));
 
 	bVelY = -sinf(angle); // Y increases as you go down, not up.
-	bVelX = bVelX < 0 ? cosf(angle) : -cosf(angle);
+	bVelX = bVelX*-1;
+    //bVelX = bVelX < 0 ? cosf(angle) : -cosf(angle);
 
 	return 1;
 
