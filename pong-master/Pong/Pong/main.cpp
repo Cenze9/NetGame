@@ -51,6 +51,7 @@ int main(int argc, char* arg[])
 		frameStart = SDL_GetTicks();
 
 		Game->HandleEvents();
+        //Enet();
 		if (roundCounter == 2)
 		{
 			Enet();
@@ -111,12 +112,11 @@ int EnetStart()
 void Enet() 
 {
 	SDL_Delay(1000/60);
-	eventStatus = enet_host_service(client, &event, 1000/60);
 	int dataP[6];
 
 
 	// If we had some event that interested us
-	if (eventStatus > 0) {
+	while ((eventStatus = enet_host_service(client, &event, 0)) > 0) {
 		switch (event.type) {
 		case ENET_EVENT_TYPE_CONNECT:
 		{
@@ -150,12 +150,8 @@ void Enet()
 			//{
 			//	Game->Player2->posY = dataP[0];
 			//}
-
-			
 			//Game->Player2->posY = dataP[1];
 			//std::cout << dataP[1] << std::endl;
-
-            
 
 			Game->ballX = dataP[3];
 			Game->ballY = dataP[4];
@@ -168,8 +164,7 @@ void Enet()
 				
 			}
 
-            tempY = dataP[2];
-
+            //tempY = dataP[2];
 			/*
 			if (data[4] == 1) 
 			{
@@ -197,20 +192,28 @@ void Enet()
 	//dataP[1] = Game->Player1->posY;
 	if (clientID == 1)
 	{
+        if (abs(dataP[2]) < 700) 
+        {
+            
+            tempY = dataP[2];
+        }
+
         dataP[1] = Game->Player1->posY;
-		tempY = dataP[2];
 	}
 	else if (clientID == 2)
 	{
-		dataP[2] = Game->Player1->posY;
-		tempY = dataP[1];
+        if (abs(dataP[1]) < 700)
+        {
+            tempY = dataP[1];
+        }
+        dataP[2] = Game->Player1->posY;
 	}
 
-    for (int i = 0; i < 6; i++)
-    {
-        std::cout << "Data is this    " << dataP[i] << std::endl;
-
-    }
+   //for (int i = 0; i < 6; i++)
+   //{
+   //    std::cout << "Data is this    " << dataP[i] << std::endl;
+   //
+   //}
 	//	
 	//if (Game->Player1->posY != tempY) 
 	//{

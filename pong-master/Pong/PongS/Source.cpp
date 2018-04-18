@@ -23,7 +23,7 @@ struct object{
 
 int PaddleW = 10;
 int PaddleH = 70;
-float bVelX = 0;
+float bVelX = 1;
 float bVelY = 0;
 static int p1y = 0;
 int p2y = 0;
@@ -75,8 +75,8 @@ int main(int argc, char **argv)
     printf("Ready %d", playernum, "\n");
 	while (1) {
 
-
-		
+        objects[0].Px += bVelX;
+        objects[0].Py += bVelY;
 		
 		if (objects.size() >= 2)
 		{
@@ -88,8 +88,17 @@ int main(int argc, char **argv)
 			play2.x = objects[2].Px;
 			play2.y = objects[2].Py;
 
-			// CheckCollision(objects[1], objects[0]);
-			// CheckCollision(objects[2], objects[0]);
+            if (objects[0].Px<15)
+            {
+                data[0] = 3;
+            }
+            else if (objects[0].Px >(775 + PaddleW))
+            {
+                data[0] = 4;
+            }
+
+			CheckCollision(objects[1], objects[0]);
+			CheckCollision(objects[2], objects[0]);
 
 			// objects[0].Px += bVelX*(32.0f* 0.001f) * 5;
 			// objects[0].Py += bVelY*(32.0f* 0.001f) * 5;
@@ -166,7 +175,7 @@ int main(int argc, char **argv)
 
 		data[0] = 0;
 		//data[1] = objects[0].Px;
-        data[2] = data[1];
+
 
         printf("sending this: %d\n", data[1]);
 
@@ -174,15 +183,6 @@ int main(int argc, char **argv)
 		data[3] = objects[0].Px;
 		data[4] = objects[0].Py;
 		data[5] = playernum;
-
-		objects[0].Px++;
-		objects[0].Py++;
-
-		if (objects[0].Px == 600)
-		{
-			objects[0].Px=0;
-			objects[0].Py=0;
-		}
 		
 		packit = enet_packet_create((void*)data, (sizeof(data)+1), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
 		enet_host_broadcast(server, 0, packit);
@@ -196,13 +196,6 @@ int main(int argc, char **argv)
 
 int CheckCollision(object paddle, object ball)
 {
-	if (ball.Px<15 || ball.Px>(775 + PaddleW))
-	{
-		return 3;
-	}
-
-
-
 	int by0 = ball.Py;
 	int by1 = ball.Py + 10;
 	int ry0 = paddle.Py;
@@ -213,8 +206,6 @@ int CheckCollision(object paddle, object ball)
 	if (!happened) {
 		return 0;
 	}
-
-	
 
 	int mby = by0 + 5;
 	int mry = ry0 + 5;
