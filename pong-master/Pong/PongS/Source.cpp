@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 			// objects[0].Py += bVelY*(32.0f* 0.001f) * 5;
 		}
 
-        eventStatus = enet_host_service(server, &event, (5));
+        eventStatus = enet_host_service(server, &event, 1000);
 
 		// If we had some event that interested us
 		if (eventStatus > 0) {
@@ -122,12 +122,12 @@ int main(int argc, char **argv)
 
 				//memcpy
 				
-                /*
+                
 				for (int i = 0; i < 6; i++)
 				{
 					data[i] = (int)p[i];
 				}
-                */
+                
 
                 
                     p1y = (int)p[1];
@@ -165,8 +165,11 @@ int main(int argc, char **argv)
 
 
 		data[0] = 0;
-		data[1] = objects[0].Px;
-		data[2] = objects[0].Px;
+		//data[1] = objects[0].Px;
+        data[2] = data[1];
+
+        printf("sending this: %d\n", data[1]);
+
 
 		data[3] = objects[0].Px;
 		data[4] = objects[0].Py;
@@ -183,17 +186,7 @@ int main(int argc, char **argv)
 		
 		packit = enet_packet_create((void*)data, (sizeof(data)+1), ENetPacketFlag::ENET_PACKET_FLAG_RELIABLE);
 		enet_host_broadcast(server, 0, packit);
-		
-        int temparry[6];
 
-        for (int i = 0; i < 6; i++)
-        {
-            temparry[i] = (int)packit[i].data;
-            std::cout << "I sent this   " << temparry[i] << std::endl;
-        }
-
-        std::cout << "LOOP" << std::endl;
-		
 	}
 
 	atexit(enet_deinitialize);

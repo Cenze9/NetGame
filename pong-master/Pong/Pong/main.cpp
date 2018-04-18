@@ -51,7 +51,7 @@ int main(int argc, char* arg[])
 		frameStart = SDL_GetTicks();
 
 		Game->HandleEvents();
-		if (roundCounter == 10)
+		if (roundCounter == 2)
 		{
 			Enet();
 			roundCounter = 0;
