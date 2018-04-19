@@ -1,3 +1,7 @@
-﻿  main.cpp
+﻿  paddle.cpp
+  main.cpp
 c:\users\henrileh\documents\github\netgame\pong-master\pong\pong\main.cpp(227): warning C4101: 'temparry': unreferenced local variable
+  game.cpp
+  Generating Code...
+     Creating library C:\Users\henrileh\Documents\GitHub\NetGame\pong-master\Pong\Debug\Pong.lib and object C:\Users\henrileh\Documents\GitHub\NetGame\pong-master\Pong\Debug\Pong.exp
   Pong.vcxproj -> C:\Users\henrileh\Documents\GitHub\NetGame\pong-master\Pong\Debug\Pong.exe

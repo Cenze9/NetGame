@@ -1,16 +1,15 @@
 #include <SDL.h>
 #include <iostream>
-#include <thread>
+
 #include <cstring>
 #include <enet/enet.h>
 #include <string.h>
 #include <stdio.h>
 #include <vector>
+#include <math.h>
 
 #define SDL_main main
 // server.c
-#include <enet/enet.h>
-#include <stdio.h>
 
 struct object{
 	int Id; 
@@ -21,12 +20,14 @@ struct object{
 	object(int i, int x, int y) :Id(i), Px(x), Py(y){}
 };
 
+
+int p2y = 0;
 int PaddleW = 10;
 int PaddleH = 70;
 float bVelX = -1;
 float bVelY = 0;
 static int p1y = 0;
-int p2y = 0;
+
 
 int CheckCollision(object paddle, object ball);
 
@@ -70,7 +71,7 @@ int main(int argc, char **argv)
 	SDL_Rect pallo = {objects[0].Px,objects[0].Py,10,10};
 
 	
-
+    data[0] = 0;
     printf("Ready %d", playernum, "\n");
 	while (1) {
 
@@ -96,16 +97,20 @@ int main(int argc, char **argv)
 
 				int *p = (int*)event.packet->data;
 				
-				
-				printf("got data: %d\n",p[1]);
 
 				//memcpy
-				
-                
-				for (int i = 0; i < 6; i++)
-				{
-					data[i] = (int)p[i];
-				}
+                //only need [1] and [2] spots from players
+                if (abs((int)p[1]) < 700)
+                {
+                    data[1] = (int)p[1];
+                }
+                if (abs((int)p[2]) < 700)
+                {
+                    data[2] = (int)p[2];
+                }
+               
+
+
                 
 
                 
@@ -131,7 +136,7 @@ int main(int argc, char **argv)
 				{
 					if (objects[i].info == event.peer)
 					{
-						//TODOO remove from vector
+
 					}
 				}
 
@@ -142,51 +147,84 @@ int main(int argc, char **argv)
 		}
 
 
+
+
+
+
         objects[0].Px += bVelX;
         objects[0].Py += bVelY;
 
+
+        // objects[0].Px += bVelX*(32.0f* 0.001f) * 5;
+        // objects[0].Py += bVelY*(32.0f* 0.001f) * 5;
+
+
+
         if (objects.size() >= 2)
         {
-            if (abs(data[1]) < 700)
+            objects[1].Px = 15;
+
+
+            objects[1].Py = data[1];
+
+
+            if (objects[0].Px < 100)
             {
-                objects[1].Py = data[1];
+                CheckCollision(objects[1], objects[0]);
             }
         }
         if (objects.size() >= 3)
         {
-            if (abs(data[1]) < 700) 
+            objects[2].Px = 775;
+
+
+            objects[2].Py = data[2];
+
+
+            if (objects[0].Px > 690)
             {
-                objects[2].Py = data[2];
+                CheckCollision(objects[2], objects[0]);
             }
             printf("Two players \n");
 
-            printf("%d,%d\n",objects[1].Py, objects[2].Py);
+            printf("%d,%d\n", objects[1].Py, objects[2].Py);
 
-            CheckCollision(objects[1], objects[0]);
-            CheckCollision(objects[2], objects[0]);
 
-            // objects[0].Px += bVelX*(32.0f* 0.001f) * 5;
-            // objects[0].Py += bVelY*(32.0f* 0.001f) * 5;
+
         }
-        if (objects[0].Px<15)
+
+
+        //  BALL LOCATION CHECK
+
+        if (objects[0].Px<0)
         {
             data[0] = 3;
             objects[0].Px = 400;
             objects[0].Py = 350;
         }
-        else if (objects[0].Px >(775 + PaddleW))
+        else if (objects[0].Px >800)
         {
             data[0] = 4;
             objects[0].Px = 400;
             objects[0].Py = 350;
         }
 
+        if (objects[0].Py < 0 && bVelY<0)
+        {
+            bVelY = (bVelY * -1);
+        }
+        else if (objects[0].Py > 700 && bVelY>0)
+        {
+            bVelY = (bVelY * -1);
+        }
 
-		data[0] = 0;
-		//data[1] = objects[0].Px;
 
 
-        printf("sending this: %d\n", data[1]);
+        printf("Ball: \n");
+
+        printf("Xv:%2f Yv:%2f\n", bVelX, bVelY);
+        printf(" X:%d  Y:%d\n", objects[0].Px, objects[0].Py);
+
 
 
 		data[3] = objects[0].Px;
@@ -220,21 +258,21 @@ int CheckCollision(object paddle, object ball)
 
     bool happened = false;
 
-    if(rx1 < 200) // Left Paddle (Player 1)
+    if(rx1 < 50) // Left Paddle (Player 1)
     { 
         if (rx1 >= bx0) 
         {
-            printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+           
             if (ry0 <= by1 && ry1 >= by0) 
             {
                 happened = true;
             }
         }
     }
-    else if (rx0 > 600) // Right Paddle (Payer 2)
+    if (rx0 > 750) // Right Paddle (Payer 2)
     {
        
-        if (rx0 >= bx1)
+        if (rx0 <= bx1)
         {
             
             if (ry0 <= by1 && ry1 >= by0)
@@ -277,14 +315,15 @@ int CheckCollision(object paddle, object ball)
 	}
 
 	int mby = by0 + 5;
-	int mry = ry0 + 5;
+	int mry = ry0 + 35;
 	float mid_distance = mry - mby;
 	float RACKET_HITBACK_MAXANGLE = 85.0f*M_PI / 180.0f;
 	float angle = RACKET_HITBACK_MAXANGLE * (mid_distance / (70/2.0f+5.0f));
 
-	bVelY = -sinf(angle); // Y increases as you go down, not up.
-	bVelX = bVelX*-1;
+	bVelY = round(-sin(angle)); // Y increases as you go down, not up.
+	bVelX = (-bVelX);
     //bVelX = bVelX < 0 ? cosf(angle) : -cosf(angle);
+
 
 	return 1;
 
