@@ -132,7 +132,7 @@ void Enet()
 			int* p = (int*)event.packet->data;
 			for (int i = 0; i < 6; i++)
 			{
-				dataP[i] = (float)p[i];
+				dataP[i] = (int)p[i];
 			}
 
 			for (int i = 0; i < 6; i++)
@@ -197,7 +197,7 @@ void Enet()
             
             tempY = dataP[2];
         }
-        dataP[2] = -2000;
+        dataP[1] = -200;
         dataP[1] = Game->Player1->posY;
 	}
 	else if (clientID == 2)
@@ -206,7 +206,7 @@ void Enet()
         {
             tempY = dataP[1];
         }
-        dataP[1] = -2000;
+        dataP[1] = -200;
         dataP[2] = Game->Player1->posY;
 	}
 
@@ -225,7 +225,7 @@ void Enet()
 		enet_peer_send(peer, 0, packet);
 		std::cout << "I sent data" << std::endl;
 
-       //int temparry[6];
+        int temparry[6];
        /* for (int i = 0; i < 6; i++)
         {
             temparry[i] = (int)packet[i].data;
