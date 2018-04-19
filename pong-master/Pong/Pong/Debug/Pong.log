@@ -1,8 +1,6 @@
 ﻿  paddle.cpp
   main.cpp
-c:\users\henrileh\documents\github\netgame\pong-master\pong\pong\main.cpp(135): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\henrileh\documents\github\netgame\pong-master\pong\pong\main.cpp(156): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\henrileh\documents\github\netgame\pong-master\pong\pong\main.cpp(157): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\henrileh\documents\github\netgame\pong-master\pong\pong\main.cpp(228): warning C4101: 'temparry': unreferenced local variable
   game.cpp
   Generating Code...
      Creating library C:\Users\henrileh\Documents\GitHub\NetGame\pong-master\Pong\Debug\Pong.lib and object C:\Users\henrileh\Documents\GitHub\NetGame\pong-master\Pong\Debug\Pong.exp

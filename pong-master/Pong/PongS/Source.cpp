@@ -21,12 +21,12 @@ struct object{
 };
 
 
-int p2y = 0;
+int hits = 0;
 int PaddleW = 10;
 int PaddleH = 70;
-float bVelX = -1;
+float bVelX = -2;
 float bVelY = 0;
-static int p1y = 0;
+
 
 
 int CheckCollision(object paddle, object ball);
@@ -108,16 +108,7 @@ int main(int argc, char **argv)
                 {
                     data[2] = (int)p[2];
                 }
-               
 
-
-                
-
-                
-                    p1y = (int)p[1];
-                
-                    p2y = (int)p[2];
-                
 
 				break;
 			}
@@ -193,6 +184,21 @@ int main(int argc, char **argv)
 
         }
 
+        if (hits > 5)
+        {
+            if (bVelX > 0)
+            {
+                bVelX++;
+                hits = 0;
+            }
+            else if (bVelX < 0)
+            {
+                bVelX--;
+                hits = 0;
+            }
+        }
+
+
 
         //  BALL LOCATION CHECK
 
@@ -201,12 +207,20 @@ int main(int argc, char **argv)
             data[0] = 3;
             objects[0].Px = 400;
             objects[0].Py = 350;
+            
+            bVelX = -1;
+            hits = 0;
+
         }
         else if (objects[0].Px >800)
         {
             data[0] = 4;
             objects[0].Px = 400;
             objects[0].Py = 350;
+
+            bVelX = -1;
+            hits = 0;
+
         }
 
         if (objects[0].Py < 0 && bVelY<0)
@@ -266,6 +280,7 @@ int CheckCollision(object paddle, object ball)
             if (ry0 <= by1 && ry1 >= by0) 
             {
                 happened = true;
+                hits++;
             }
         }
     }
@@ -278,8 +293,7 @@ int CheckCollision(object paddle, object ball)
             if (ry0 <= by1 && ry1 >= by0)
             {
                 happened = true;
-                
-           
+                hits++;
             }
         }
     }
