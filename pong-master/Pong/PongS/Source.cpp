@@ -21,14 +21,11 @@ struct object {
 };
 
 
-int p2y = 0;
+
 int PaddleW = 10;
 int PaddleH = 70;
 float bVelX = -1;
 float bVelY = 0;
-static int p1y = 0;
-
-
 int CheckCollision(object paddle, object ball);
 
 int main(int argc, char **argv)
@@ -100,24 +97,14 @@ int main(int argc, char **argv)
 
                 //memcpy
                 //only need [1] and [2] spots from players
-                if (abs((int)p[1]) < 700)
+                if (abs((int)p[1]) < 700 && abs((int)p[1]) > -100)
                 {
                     data[1] = (int)p[1];
                 }
-                if (abs((int)p[2]) < 700)
+                if (abs((int)p[2]) < 700 && abs((int)p[1]) > -100)
                 {
                     data[2] = (int)p[2];
                 }
-
-
-
-
-
-
-                p1y = (int)p[1];
-
-                p2y = (int)p[2];
-
 
                 break;
             }
@@ -213,7 +200,7 @@ int main(int argc, char **argv)
         {
             bVelY = (bVelY * -1);
         }
-        else if (objects[0].Py > 700 && bVelY>0)
+        else if (objects[0].Py > 690 && bVelY>0)
         {
             bVelY = (bVelY * -1);
         }
