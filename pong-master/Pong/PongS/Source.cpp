@@ -142,11 +142,6 @@ int main(int argc, char **argv)
         objects[0].Py += bVelY;
 
 
-        // objects[0].Px += bVelX*(32.0f* 0.001f) * 5;
-        // objects[0].Py += bVelY*(32.0f* 0.001f) * 5;
-
-
-
         if (objects.size() >= 2)
         {
             objects[1].Px = 15;
@@ -258,9 +253,6 @@ int CheckCollision(object paddle, object ball)
     int bx0 = ball.Px;
     int bx1 = ball.Px + 10;
 
-    int ppx = ball.Px + 5;
-    int ppy = ball.Py + 5;
-
     int ry0 = paddle.Py;
     int ry1 = paddle.Py + 70;
     int rx0 = paddle.Px;
@@ -293,31 +285,6 @@ int CheckCollision(object paddle, object ball)
             }
         }
     }
-
-    /*
-    if(ppx > rx0 && ppx < rx1)
-    {
-    if (ppy > ry0 && ppy < ry1)
-    {
-    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    }
-    }
-    */
-
-
-
-    /* if (pp > 600) {
-    happened = (rx0 > pp);
-    printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    }
-    else if (pp < 200)
-    {
-    happened = (rx0 > pp);
-    }
-    */
-    //bool happened = ((ry0 < by0 && by0 < ry1) || (ry0 < by1 && by1 < ry1) ));
-
-
 
     if (!happened) {
         return 0;
