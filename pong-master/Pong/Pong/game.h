@@ -20,8 +20,8 @@ public:
 	virtual ~game();
 
 	SDL_Rect Ball;
-	int ballX;
-	int ballY;
+	float ballX;
+	float ballY;
 	void RenderBall();
 
 	paddle* Player1;

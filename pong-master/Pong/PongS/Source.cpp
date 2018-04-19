@@ -13,8 +13,8 @@
 
 struct object{
 	int Id; 
-	int Px=0; 
-	int Py=0;
+	float Px=0; 
+	float Py=0;
 	ENetPeer* info;
 
 	object(int i, int x, int y) :Id(i), Px(x), Py(y){}
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 	int playernum=0;
 	int eventStatus;
 	std::vector<object> objects;
-	int data[6];
+	float data[6];
 	
 
 
@@ -187,7 +187,7 @@ int main(int argc, char **argv)
             }
             printf("Two players \n");
 
-            printf("%d,%d\n", objects[1].Py, objects[2].Py);
+            printf("%f2,%f2\n", objects[1].Py, objects[2].Py);
 
 
 
@@ -247,10 +247,8 @@ int CheckCollision(object paddle, object ball)
 	int by1 = ball.Py + 10;
     int bx0 = ball.Px;
     int bx1 = ball.Px + 10;
-
     int ppx = ball.Px + 5;
     int ppy = ball.Py + 5;
-
 	int ry0 = paddle.Py;
 	int ry1 = paddle.Py + 70;
     int rx0 = paddle.Px;

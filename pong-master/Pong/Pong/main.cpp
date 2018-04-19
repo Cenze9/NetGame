@@ -132,7 +132,7 @@ void Enet()
 			int* p = (int*)event.packet->data;
 			for (int i = 0; i < 6; i++)
 			{
-				dataP[i] = (int)p[i];
+				dataP[i] = (float)p[i];
 			}
 
 			for (int i = 0; i < 6; i++)
@@ -225,7 +225,7 @@ void Enet()
 		enet_peer_send(peer, 0, packet);
 		std::cout << "I sent data" << std::endl;
 
-        int temparry[6];
+       //int temparry[6];
        /* for (int i = 0; i < 6; i++)
         {
             temparry[i] = (int)packet[i].data;
