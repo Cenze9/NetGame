@@ -197,7 +197,7 @@ void Enet()
             
             tempY = dataP[2];
         }
-
+        dataP[2] = -2000;
         dataP[1] = Game->Player1->posY;
 	}
 	else if (clientID == 2)
@@ -206,6 +206,7 @@ void Enet()
         {
             tempY = dataP[1];
         }
+        dataP[1] = -2000;
         dataP[2] = Game->Player1->posY;
 	}
 

@@ -100,11 +100,11 @@ int main(int argc, char **argv)
 
 				//memcpy
                 //only need [1] and [2] spots from players
-                if (abs((int)p[1]) < 700)
+                if (abs((int)p[1]) < 700&& abs((int)p[1]) > -100)
                 {
                     data[1] = (int)p[1];
                 }
-                if (abs((int)p[2]) < 700)
+                if (abs((int)p[2]) < 700 && abs((int)p[1]) > -100)
                 {
                     data[2] = (int)p[2];
                 }
